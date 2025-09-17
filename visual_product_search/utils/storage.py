@@ -1,7 +1,7 @@
 import os
 import pickle
-from logger import logging
-from exception import ExceptionHandle
+from visual_product_search.logger import logging
+from visual_product_search.exception import ExceptionHandle
 import sys
 
 def save_pickle(obj, path : str):

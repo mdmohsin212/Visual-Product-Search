@@ -2,8 +2,8 @@ import torch
 from torch.nn.functional import normalize
 from PIL import Image
 from transformers import CLIPModel, CLIPProcessor
-from logger import logging
-from exception import ExceptionHandle
+from visual_product_search.logger import logging
+from visual_product_search.exception import ExceptionHandle
 import sys
 
 def get_image_embedding(image_path : str, model : CLIPModel, processor : CLIPProcessor, device="cuda"):

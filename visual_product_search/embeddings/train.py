@@ -2,8 +2,8 @@ import torch
 from torch.nn import CrossEntropyLoss
 from torch.amp import GradScaler, autocast
 from torch.optim import AdamW
-from logger import logging
-from exception import ExceptionHandle
+from visual_product_search.logger import logging
+from visual_product_search.exception import ExceptionHandle
 import sys
 
 def train(model, dataloader, device, epochs=5, lr=2e-5):

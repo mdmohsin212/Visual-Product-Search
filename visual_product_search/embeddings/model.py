@@ -1,7 +1,7 @@
 import torch
 from transformers import CLIPModel, CLIPProcessor
-from logger import logging
-from exception import ExceptionHandle
+from visual_product_search.logger import logging
+from visual_product_search.exception import ExceptionHandle
 import sys
 
 def load_model(model_name : str = "openai/clip-vit-large-patch14", device : str = None):

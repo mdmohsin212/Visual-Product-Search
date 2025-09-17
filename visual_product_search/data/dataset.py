@@ -3,8 +3,8 @@ from torch.utils.data import Dataset, DataLoader
 from torch.nn.functional import pad
 from transformers import CLIPProcessor
 from PIL import Image
-from logger import logging
-from exception import ExceptionHandle
+from visual_product_search.logger import logging
+from visual_product_search.exception import ExceptionHandle
 import pandas as pd
 import sys, os
 
