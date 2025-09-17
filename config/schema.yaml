@@ -5,5 +5,4 @@ model:
   epochs : int
 
 index:
-  faiss_index_path : str
   dimension : int

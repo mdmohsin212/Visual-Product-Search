@@ -5,5 +5,4 @@ model:
   epochs: 5
 
 index:
-  faiss_index_path: "artifacts/faiss_index.bin"
   dimension: 768

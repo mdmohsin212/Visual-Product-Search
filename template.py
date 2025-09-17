@@ -4,7 +4,6 @@ from pathlib import Path
 project_name = "visual_product_search"
 
 list_of_files = [
-    f"{project_name}/.github/workflows/ci-cd.yml",
     f"{project_name}/embeddings/__init__.py",
     f"{project_name}/embeddings/model.py",
     f"{project_name}/embeddings/embed.py",
@@ -52,6 +51,6 @@ for filepath in list_of_files:
         os.makedirs(filedir, exist_ok=True)
     
     if not filepath.exists() or filepath.stat().st_size == 0:
-        filepath.touch()  # simpler way to create empty file
+        filepath.touch()
     else:
         print(f'{filename} is already present in {filedir} and has some content. Skipping creation.')

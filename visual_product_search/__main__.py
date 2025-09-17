@@ -3,23 +3,27 @@ from visual_product_search.data.dataset import ProductDataset, custom_collate_fu
 from visual_product_search.embeddings.model import load_model
 from visual_product_search.embeddings.train import train
 from visual_product_search.utils.config import load_config
+from visual_product_search.embeddings.embed import get_image_embedding, get_text_embedding
+from visual_product_search.logger import logging
+from visual_product_search.exception import ExceptionHandle
+
 from torch.utils.data import DataLoader
-from logger import logging
-from exception import ExceptionHandle
+import numpy as np
 import sys
 
 
 def main():
     try:
         config = load_config("config/model.yaml")
+        
         df, img_dir = load_data()
-        model, processor, device = load_model()
+        model, processor, device = load_model(config["model"]["name"])
         
         dataset = ProductDataset(df, processor, img_dir)
-        dataloader = DataLoader(dataset, batch_size=128, collate_fn=custom_collate_func, shuffle=True)
+        dataloader = DataLoader(dataset, batch_size=config["model"]["batch_size"], collate_fn=custom_collate_func, shuffle=True)
         
-        train(model, dataloader, device, epochs=5, lr=2e-5)
-    
+        train(model, dataloader, device, epochs=config["model"]["epochs"], lr=config["model"]["learning_rate"])
+        
     except Exception as e:
         logging.critical("Pipeline Failed")
         raise ExceptionHandle(e, sys)
