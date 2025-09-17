@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 
-project_name = "Visual Product Search"
+project_name = "visual product search"
 
 list_of_files = [
     f"{project_name}/.github/workflows/ci-cd.yml",
