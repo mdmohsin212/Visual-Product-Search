@@ -1,0 +1,9 @@
+model:
+  name : str
+  learning_rate : float
+  batch_size : int
+  epochs : int
+
+index:
+  faiss_index_path : str
+  dimension : int

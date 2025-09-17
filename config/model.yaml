@@ -1,0 +1,9 @@
+model:
+  name: "openai/clip-vit-large-patch14"
+  learning_rate: 2e-5
+  batch_size: 128
+  epochs: 5
+
+index:
+  faiss_index_path: "artifacts/faiss_index.bin"
+  dimension: 768
