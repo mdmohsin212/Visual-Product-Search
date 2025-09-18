@@ -21,3 +21,6 @@ logging.basicConfig(
     level=logging.DEBUG,
     handlers=[file_handler, console_handler],
 )
+
+logging.getLogger("PIL").setLevel(logging.ERROR)
+logging.getLogger("matplotlib").setLevel(logging.ERROR)
