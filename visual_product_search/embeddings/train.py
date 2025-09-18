@@ -59,5 +59,5 @@ def train(model, dataloader, device, epochs=5, lr=2e-5):
             logging.info(f" Epoch {epoch + 1} / {epochs} finished | Avg Loss : {avg_loss:.4f}")
             
     except Exception as e:
-        logging.error("Training loop crashed")
+        logging.critical("Training loop crashed")
         raise ExceptionHandle(e, sys)

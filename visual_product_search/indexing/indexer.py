@@ -4,7 +4,7 @@ from visual_product_search.exception import ExceptionHandle
 import sys
 
 class DatabaseIndexer:
-    def __init__(self, uri, user, password, token, collection_name="fashion_embd"):
+    def __init__(self, uri, user, password, token, collection_name):
         try:
             connections.connect(alias="default", uri=uri, user=user, password=password, token=token)
             

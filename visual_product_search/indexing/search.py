@@ -5,7 +5,7 @@ import sys
 
 
 class DatabaseSearch:
-    def __init__(self, collection_name="fashion_embd"):
+    def __init__(self, collection_name):
         try:
             self.collection = Collection(collection_name)
             self.collection.load()
