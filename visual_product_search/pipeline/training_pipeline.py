@@ -5,11 +5,11 @@ from pathlib import Path
 import sys
 
 from visual_product_search.data.ingest import load_data
-from visual_product_search.data.dataset import ProductDataset, custom_collate_func
+from visual_product_search.data.dataset import ProductDataset
 from visual_product_search.embeddings.model import load_model
 from visual_product_search.embeddings.train import train
 from visual_product_search.utils.config import load_config
-from visual_product_search.embeddings.embed import get_image_embedding, get_text_embedding
+from visual_product_search.embeddings.embed import get_image_embedding
 from visual_product_search.indexing.indexer import DatabaseIndexer
 from visual_product_search.logger import logging
 from visual_product_search.exception import ExceptionHandle
@@ -21,6 +21,10 @@ class VisualProductPipeline:
             self.env = environ.Env()
             environ.Env.read_env(Path(__file__).resolve().parent.parent / ".env")
             self.config = load_config(config_path)
+            
+            self.cache_dir = Path("cache_dir")
+            self.cache_dir.mkdir(exist_ok=True)
+            logging.info(f"Preprocessed images will be cached in {self.cache_dir}")
         
         except Exception as e:
             logging.critical("Failed to load config or environment")
@@ -104,12 +108,16 @@ class VisualProductPipeline:
             df, img_dir = self.data_ingestion()
             model, processor, device = self.model_loading()
             
-            dataset = ProductDataset(df, processor, img_dir)
+            dataset = ProductDataset(df, processor, img_dir, str(self.cache_dir))
+            
             dataloader = DataLoader(
                 dataset,
                 batch_size=self.config["model"]["batch_size"],
-                collate_fn=custom_collate_func,
-                shuffle=True
+                shuffle=True,
+                num_workers=12,
+                pin_memory=True,
+                prefetch_factor=2,
+                persistent_workers=True
             )
             
             trained_model = self.start_training(model, dataloader, device)
