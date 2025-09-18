@@ -10,7 +10,7 @@ def load_data():
         path = kagglehub.dataset_download("paramaggarwal/fashion-product-images-dataset")
         
         logging.info("Loading Metadata CSV..")
-        df = pd.read_csv('https://raw.githubusercontent.com/mdmohsin212/Machine-Learning/refs/heads/main/dataset/fashion%20product.csv')
+        df = pd.read_csv('https://raw.githubusercontent.com/mdmohsin212/Machine-Learning/refs/heads/main/dataset/fashion_product.csv')
         
         logging.info(f"Dataset load with {len(df)}")
         

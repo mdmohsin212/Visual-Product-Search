@@ -28,15 +28,21 @@ class ProductDataset(Dataset):
             img_name = row['filename']
             img_path = os.path.join(self.img_dir, img_name)
 
-            tensor_path = os.path.join(self.preprocessed_dir, img_name + ".pt")
+            tensor_path = os.path.join(self.preprocessed_dir, img_name + ".pt") if self.preprocessed_dir else None
                 
-            if os.path.exists(tensor_path):
+            if tensor_path and os.path.exists(tensor_path):
                 pixel_values = torch.load(tensor_path)
                     
             else:
-                image = Image.open(img_path).resize((224, 224))
-                pixel_values = self.processor(images=image, return_tensors="pt")['pixel_values'].squeeze(0)
-                torch.save(pixel_values, tensor_path)
+                try:
+                    image = Image.open(img_path).resize((224, 224))
+                    pixel_values = self.processor(images=image, return_tensors="pt")['pixel_values'].squeeze(0)
+                    if tensor_path:
+                        torch.save(pixel_values, tensor_path)
+                        
+                except FileNotFoundError:
+                    logging.warning(f"Image not found: {img_path}, using dummy tensor.")
+                    pixel_values = torch.zeros(3, 224, 224)
 
             filtered_row = row.drop(labels=["filename", "link"])
             text = " ".join(str(v) for v in filtered_row.values)
