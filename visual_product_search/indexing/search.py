@@ -23,7 +23,7 @@ class DatabaseSearch:
                 anns_field="embedding",
                 param={"metric_type" : "COSINE", "params" : {"ef" : 32}},
                 limit=k,
-                output_fields=["metadata"]
+                output_fields=["metadata", "image_link"]
             )
             return result
 

@@ -14,7 +14,8 @@ class DatabaseIndexer:
             fields = [
                 FieldSchema(name="id", dtype=DataType.INT64, is_primary=True, auto_id=True),
                 FieldSchema(name="embedding", dtype=DataType.FLOAT_VECTOR, dim=768),
-                FieldSchema(name="metadata", dtype=DataType.VARCHAR, max_length=1024)
+                FieldSchema(name="metadata", dtype=DataType.VARCHAR, max_length=1024),
+                FieldSchema(name="image_link", dtype=DataType.VARCHAR, max_length=2048)
             ]
             
             schema = CollectionSchema(fields, description="Fashion Embedding")
@@ -31,9 +32,9 @@ class DatabaseIndexer:
             logging.error("Failed to initialize Database")
             raise ExceptionHandle(e, sys)
     
-    def insert_embeddings(self, embeddings, metadata):
+    def insert_embeddings(self, embeddings, metadata, img_link):
         try:
-            entities = [embeddings, metadata]
+            entities = [embeddings, metadata, img_link]
             self.collection.insert(entities)
             self.collection.flush()
             logging.info(f"Inserted total {len(embeddings)} embeddings ")

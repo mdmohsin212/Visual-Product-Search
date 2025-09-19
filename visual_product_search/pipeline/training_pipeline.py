@@ -72,11 +72,14 @@ class VisualProductPipeline:
             logging.info("Creating embeddings")
             embeddings = []
             metadata = []
+            img_link = []
             
             for row in df.itertuples(index=False):
                 img_path = f"{img_dir}/{row.filename}"
                 embd =  get_image_embedding(img_path, model, processor, device)
                 embeddings.append(embd)
+                img_link.append(row.link)
+                
                 filtered_row = row._asdict()
                 filtered_row.pop("filename", None)
                 filtered_row.pop("link", None)
@@ -84,12 +87,12 @@ class VisualProductPipeline:
             
             embeddings = np.vstack(embeddings)
             logging.info(f"create embeddings for {len(df)} samples")
-            return embeddings, metadata
+            return embeddings, metadata, img_link
         
         except Exception as e:
             raise ExceptionHandle(e, sys)
 
-    def start_indexing(self, embeddings, metadata):
+    def start_indexing(self, embeddings, metadata, img_link):
         try:
             logging.info("Starting indexing")
             indexer = DatabaseIndexer(
@@ -99,7 +102,7 @@ class VisualProductPipeline:
             token=self.env("TOKEN"),
             collection_name=self.env("COLLECTION_NAME")
             )
-            indexer.insert_embeddings(embeddings, metadata)
+            indexer.insert_embeddings(embeddings, metadata, img_link)
             indexer.create_index()
             logging.info("index completed")
         
@@ -145,8 +148,8 @@ class VisualProductPipeline:
             trained_model = self.start_training(model, dataloader, device)
             self.push_hub(trained_model, processor)
             
-            embeddings, metadata = self.create_embeddings(df, img_dir, trained_model, processor, device)
-            self.start_indexing(embeddings, metadata)
+            embeddings, metadata, img_link = self.create_embeddings(df, img_dir, trained_model, processor, device)
+            self.start_indexing(embeddings, metadata, img_link)
             
             del model, processor, trained_model
             gc.collect()
