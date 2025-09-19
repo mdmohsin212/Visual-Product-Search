@@ -2,13 +2,22 @@ import torch
 from torch.nn import CrossEntropyLoss
 from torch.amp import GradScaler, autocast
 from torch.optim import AdamW
+from transformers import get_cosine_schedule_with_warmup
 from visual_product_search.logger import logging
 from visual_product_search.exception import ExceptionHandle
 import sys
 
-def train(model, dataloader, device, epochs=5, lr=2e-5):
+def train(model, dataloader, device, epochs=5, lr=1e-5):
     optimizer = AdamW(model.parameters(), lr=lr)
     scaler = GradScaler(device="cuda")
+    grad_accum_steps = 1
+    total_steps = epochs * len(dataloader)
+    
+    scheduler = get_cosine_schedule_with_warmup(
+        optimizer,
+        num_warmup_steps=100,
+        num_training_steps=total_steps
+    )
     
     try:
         for epoch in range(epochs):
@@ -41,11 +50,17 @@ def train(model, dataloader, device, epochs=5, lr=2e-5):
                         loss_t = CrossEntropyLoss()(logits_per_image.T, labels)
                         
                         loss = (loss_i + loss_t) / 2
-                        
+                    
+                    loss = loss / grad_accum_steps
                     scaler.scale(loss).backward()
-                    scaler.step(optimizer)
-                    scaler.update()
-                    total_loss += loss.item()
+                    
+                    if (step + 1) % grad_accum_steps == 0:
+                        scaler.step(optimizer)
+                        scaler.update()
+                        optimizer.zero_grad()
+                        scheduler.step()
+                        
+                    total_loss += loss.item() * grad_accum_steps 
                     
                     if step % 10 == 0:
                         logging.info(f"Epoch {epoch+1}/{epochs}, Step {step}, Loss: {loss.item():.4f}")
@@ -57,6 +72,9 @@ def train(model, dataloader, device, epochs=5, lr=2e-5):
             
             avg_loss = total_loss / len(dataloader)
             logging.info(f" Epoch {epoch + 1} / {epochs} finished | Avg Loss : {avg_loss:.4f}")
+        
+        model.eval()
+        return model
             
     except Exception as e:
         logging.critical("Training loop crashed")
