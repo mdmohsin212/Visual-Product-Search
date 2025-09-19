@@ -19,9 +19,15 @@ def get_image_embedding(image_path : str, model : CLIPModel, processor : CLIPPro
         return embd.cpu().numpy()
     
     except Exception as e:
-        logging.error(f"Error embedding image {image_path}")
-        raise ExceptionHandle(e, sys)
-    
+        logging.warning(f"Image not found or unreadable: {image_path}. Using dummy embedding.")
+        try:
+            dummy_embd = torch.randn(1, model.config.projection_dim, device=device)
+            dummy_embd = normalize(dummy_embd, p=2, dim=-1)
+            return dummy_embd.cpu().numpy()
+        
+        except Exception as inner_e:
+            raise ExceptionHandle(e, sys)
+        
     
 def get_text_embedding(text : str, model : CLIPModel, processor : CLIPProcessor, device="cuda"):
     try:

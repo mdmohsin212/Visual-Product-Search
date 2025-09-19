@@ -1,4 +1,5 @@
 from visual_product_search.pipeline.training_pipeline import VisualProductPipeline
+from visual_product_search.pipeline.prediction_pipeline import ProductPredictionPipeline
 from visual_product_search.logger import logging
 
 def run_pipeline_thread():
@@ -9,3 +10,9 @@ def run_pipeline_thread():
         logging.critical(f"Pipeline failed: {e}")
         
 run_pipeline_thread()
+
+
+predictionPipeline = ProductPredictionPipeline()
+
+result = predictionPipeline.search_with_text("Men Black Sports Show", 3)
+print(result)
