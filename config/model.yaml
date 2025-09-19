@@ -3,6 +3,9 @@ model:
   learning_rate: 1e-5
   batch_size: 128
   epochs: 5
+  grad_accum_steps: 1
+  num_warmup_steps : 100
+  new_model: "mohsin416/clip-vit-large-patch14-fashion-retrieval"
 
 index:
   dimension: 768

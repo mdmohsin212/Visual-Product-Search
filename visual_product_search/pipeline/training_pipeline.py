@@ -1,3 +1,4 @@
+import torch, gc
 from torch.utils.data import DataLoader
 import numpy as np
 import environ
@@ -56,7 +57,9 @@ class VisualProductPipeline:
                 dataloader,
                 device,
                 epochs=self.config["model"]["epochs"],
-                lr=self.config["model"]["learning_rate"]
+                lr=self.config["model"]["learning_rate"],
+                grad_accum_steps=self.config["model"]["grad_accum_steps"],
+                num_warmup_step=self.config["model"]["num_warmup_steps"]
             )
             logging.info("Model training completed")
             return trained_model
@@ -102,6 +105,25 @@ class VisualProductPipeline:
         
         except Exception as e:
             raise ExceptionHandle(e, sys)
+    
+    def push_hub(self, model, processor):
+        try:
+            logging.info("Starting Pushing model & processor in Hugginface")
+            model.push_to_hub(
+                self.config["model"]["new_model"],
+                token=self.env("HF_TOKEN"),
+                check_pr=False
+            )
+            processor.push_to_hub(
+            self.config["model"]["new_model"],
+            token=self.env("HF_TOKEN"),
+            check_pr=False
+            )
+            logging.info("Model pushed to Hugging Face Hub")
+        
+        except Exception as e:
+            logging.error("Model push Failed")
+            raise ExceptionHandle(e, sys)
         
     def run_pipeline(self):
         try:
@@ -121,9 +143,14 @@ class VisualProductPipeline:
             )
             
             trained_model = self.start_training(model, dataloader, device)
+            self.push_hub(trained_model, processor)
             
             embeddings, metadata = self.create_embeddings(df, img_dir, trained_model, processor, device)
             self.start_indexing(embeddings, metadata)
+            
+            del model, processor, trained_model
+            gc.collect()
+            torch.cuda.empty_cache()    
             
         except Exception as e:
             logging.critical("Pipeline execution failed")

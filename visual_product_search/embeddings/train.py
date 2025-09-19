@@ -7,15 +7,14 @@ from visual_product_search.logger import logging
 from visual_product_search.exception import ExceptionHandle
 import sys
 
-def train(model, dataloader, device, epochs=5, lr=1e-5):
+def train(model, dataloader, device, epochs=5, lr=1e-5, grad_accum_steps=1, num_warmup_step=50):
     optimizer = AdamW(model.parameters(), lr=lr)
     scaler = GradScaler(device="cuda")
-    grad_accum_steps = 1
     total_steps = epochs * len(dataloader)
     
     scheduler = get_cosine_schedule_with_warmup(
         optimizer,
-        num_warmup_steps=100,
+        num_warmup_steps=num_warmup_step,
         num_training_steps=total_steps
     )
     

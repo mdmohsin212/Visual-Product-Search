@@ -3,6 +3,9 @@ model:
   learning_rate : float
   batch_size : int
   epochs : int
+  num_warmup_steps : int
+  grad_accum_steps : int
+  new_model: str
 
 index:
   dimension : int
