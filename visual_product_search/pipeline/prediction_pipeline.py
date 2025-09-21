@@ -1,6 +1,7 @@
 import sys
 import environ
 from pathlib import Path
+from pymilvus import connections
 
 from visual_product_search.embeddings.embed import get_image_embedding, get_text_embedding
 from visual_product_search.indexing.search import DatabaseSearch
@@ -19,6 +20,8 @@ class ProductPredictionPipeline:
             self.env = environ.Env()
             environ.Env.read_env(Path(__file__).resolve().parent.parent / ".env")
             self.config = load_config(config_path)
+            
+            connections.connect(alias="default", uri=self.env("DATABASE_URL"), user=self.env("USER"), password=self.env("PASSWORD"), token=self.env("TOKEN"))
             
             if ProductPredictionPipeline._Database is None:
                 ProductPredictionPipeline._Database = DatabaseSearch(

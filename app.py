@@ -27,16 +27,16 @@ def model_train():
 def predict():
     try:
         k = int(request.form.get("k", 5))
-
+               
         if request.form.get("text_field"):
             query = request.form["text_field"]
             result = predictionPipeline.search_with_text(query, k)
-            return render_template("home.html", result=result)
+            return render_template("home.html", results=result)
 
         elif "img_field" in request.files:
-            img_file = request.files["img_field"]
+            img_file = request.files["img_field"]   
             result = predictionPipeline.search_with_image(img_file, k)
-            return render_template("home.html", result=result)
+            return render_template("home.html", results=result)
 
         else:
             return render_template("home.html", result="No input provided")
@@ -46,4 +46,4 @@ def predict():
         raise ExceptionHandle(e, sys)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=8000)
