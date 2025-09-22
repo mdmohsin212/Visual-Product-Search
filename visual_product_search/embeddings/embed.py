@@ -26,7 +26,7 @@ def get_image_embedding(image_path : str, model : CLIPModel, processor : CLIPPro
             return dummy_embd.cpu().numpy()
         
         except Exception as inner_e:
-            raise ExceptionHandle(e, sys)
+            raise ExceptionHandle(inner_e, sys)
         
     
 def get_text_embedding(text : str, model : CLIPModel, processor : CLIPProcessor, device="cuda"):
