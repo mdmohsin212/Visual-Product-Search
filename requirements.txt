@@ -1,0 +1,10 @@
+flask
+torch
+transformers
+PIL
+pandas
+kagglehub
+pymilvus
+pathlib
+environ
+numpy
