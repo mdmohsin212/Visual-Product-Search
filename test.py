@@ -16,23 +16,52 @@ from visual_product_search.utils.config import load_config
 # print(data)
 
 from pymilvus import connections
-import environ
+# import environ
 
-env = environ.Env()
-environ.Env.read_env()
+# env = environ.Env()
+# environ.Env.read_env()
 
-print(env("USER"))
+# print(env("USER"))
 
 
 # from pymilvus import FieldSchema, CollectionSchema, DataType, Collection
 
 # collection_name = "fashion_clip_embeddings"
 
+
+
 # fields = [
 #     FieldSchema(name="id", dtype=DataType.INT64, is_primary=True, auto_id=True),
-#     FieldSchema(name="embedding", dtype=DataType.FLOAT_VECTOR, dim=768),
-#     FieldSchema(name="metadata", dtype=DataType.VARCHAR, max_length=1024)
+#     FieldSchema(name="e", dtype=DataType.FLOAT_VECTOR, dim=768),
+#     FieldSchema(name="text", dtype=DataType.VARCHAR, max_length=1024)
 # ]
 
 # schema = CollectionSchema(fields, description="Fashion CLIP embeddings")
 # collection = Collection(name=collection_name, schema=schema)
+
+# import numpy as np
+
+# n_samples = 2000
+# embeddings = [np.random.rand(768).astype(np.float32) for _ in range(n_samples)]
+# texts = [f"Product description {i}" for i in range(n_samples)]
+
+
+# batch_size = 500
+# n = len(embeddings)
+
+# for start in range(0, n, batch_size):
+#     end = min(start + batch_size, n)
+#     batch_emb = embeddings[start:end]
+#     batch_text = texts[start:end]
+
+#     entities = [
+#         batch_emb,
+#         batch_text  
+#     ]
+#     insert_result = collection.insert(entities)
+#     collection.flush()
+#     print(f"Inserted {len(batch_emb)} rows ({start} → {end})")
+
+
+# print(f"Inserted total {n} embeddings")
+# print("Total entities:", collection.num_entities)

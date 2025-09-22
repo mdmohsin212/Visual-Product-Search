@@ -1,4 +1,4 @@
-from pymilvus import connections, FieldSchema, CollectionSchema, DataType, Collection
+from pymilvus import connections, FieldSchema, CollectionSchema, DataType, Collection, utility
 from visual_product_search.logger import logging
 from visual_product_search.exception import ExceptionHandle
 import sys
@@ -20,19 +20,18 @@ class DatabaseIndexer:
             
             schema = CollectionSchema(fields, description="Fashion Embedding")
             
-            if self.connection_name in [data.name for data in Collection.list_collection()]:
+            if utility.has_collection(self.connection_name):
                 self.collection = Collection(self.connection_name)
-                logging.info(f"Loaded exiting collection : {self.connection_name}")
-                
+                print(f"Loaded existing collection: {self.connection_name}")
             else:
                 self.collection = Collection(name=self.connection_name, schema=schema)
-                logging.info(f"Create new collection : {self.connection_name}")
+                print(f"Created new collection: {self.connection_name}")
                 
         except Exception as e:
             logging.error("Failed to initialize Database")
             raise ExceptionHandle(e, sys)
     
-    def insert_embeddings(self, embeddings, metadata, img_link):
+    def insert_embeddings(self, embeddings, metadata, img_link, batch_size=500):
         try:
             entities = [embeddings, metadata, img_link]
             self.collection.insert(entities)
