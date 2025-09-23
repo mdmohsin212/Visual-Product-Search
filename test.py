@@ -65,3 +65,15 @@ from pymilvus import connections
 
 # print(f"Inserted total {n} embeddings")
 # print("Total entities:", collection.num_entities)
+
+# import requests 
+# API_URL = "https://api-inference.huggingface.co/models/mohsin416/clip-vit-large-patch14-fashion-retrieval" 
+# HF_TOKEN = "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"
+# HEADERS = {"Authorization": f"Bearer {HF_TOKEN}"} 
+# def get_text_embedding(text): 
+#     payload = {"inputs": text} 
+#     response = requests.post(API_URL, headers=HEADERS, json=payload) 
+#     return response.json()
+
+# get_text_embedding("hello")
+
