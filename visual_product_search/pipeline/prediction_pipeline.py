@@ -34,7 +34,7 @@ class ProductPredictionPipeline:
     
     def _load_model(self):
         if ProductPredictionPipeline._model is None:
-            ProductPredictionPipeline._model, ProductPredictionPipeline._processor, ProductPredictionPipeline._device = load_model(self.config["mode"]["new_model"])
+            ProductPredictionPipeline._model, ProductPredictionPipeline._processor, ProductPredictionPipeline._device = load_model(self.config["model"]["new_model"])
             logging.info("Model loaded successfully.")
     
     def search_with_text(self, text : str, k=5):
