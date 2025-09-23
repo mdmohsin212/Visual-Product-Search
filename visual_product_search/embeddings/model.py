@@ -9,7 +9,7 @@ def load_model(model_name : str, device : str = None):
         device = "cuda" if torch.cuda.is_available() else "cpu"
         logging.info(f"Loading CLIP model {model_name} on {device}")
         
-        model = CLIPModel.from_pretrained(model_name).to(device)
+        model = CLIPModel.from_pretrained(model_name, load_in_8bit=True).to(device)
         processor = CLIPProcessor.from_pretrained(model_name)
         logging.info("Model and processor loaded successfully")
         return model, processor, device
