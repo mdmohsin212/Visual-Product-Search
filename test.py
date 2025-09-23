@@ -68,7 +68,7 @@ from pymilvus import connections
 
 # import requests 
 # API_URL = "https://api-inference.huggingface.co/models/mohsin416/clip-vit-large-patch14-fashion-retrieval" 
-# HF_TOKEN = "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"
+# HF_TOKEN = ""
 # HEADERS = {"Authorization": f"Bearer {HF_TOKEN}"} 
 # def get_text_embedding(text): 
 #     payload = {"inputs": text} 
