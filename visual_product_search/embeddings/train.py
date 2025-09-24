@@ -78,3 +78,47 @@ def train(model, dataloader, device, epochs=5, lr=1e-5, grad_accum_steps=1, num_
     except Exception as e:
         logging.critical("Training loop crashed")
         raise ExceptionHandle(e, sys)
+    
+    
+# for epoch in range(EPOCHS):
+#     model.train()
+#     total_loss = 0.0
+#     start_epoch = time.time()
+#     print(f"\n======== Epoch {epoch+1}/{EPOCHS} ========")
+    
+#     for batch_idx, (imgs, captions) in enumerate(dataloader, start=1):
+#         batch_start = time.time()
+#         imgs = imgs.to(DEVICE)
+#         inputs_txt = processor(text=list(captions), return_tensors="pt", padding=True, truncation=True).to(DEVICE)
+
+#         optimizer.zero_grad()
+#         with autocast(device_type="cuda", dtype=torch.float16):
+#             inputs_img = processor(images=imgs, return_tensors="pt").to(DEVICE)
+#             img_embeds = model.get_image_features(**inputs_img)
+#             txt_embeds = model.get_text_features(**inputs_txt)
+
+#             img_embeds = nn.functional.normalize(img_embeds, dim=-1)
+#             txt_embeds = nn.functional.normalize(txt_embeds, dim=-1)
+
+#             logits = img_embeds @ txt_embeds.T * 100
+#             labels = torch.arange(len(logits), device=DEVICE)
+#             loss_i2t = loss_fn(logits, labels)
+#             loss_t2i = loss_fn(logits.T, labels)
+#             loss = (loss_i2t + loss_t2i) / 2
+
+#         scaler.scale(loss).backward()
+#         scaler.step(optimizer)
+#         scaler.update()
+
+#         total_loss += loss.item()
+
+#         if batch_idx % 50 == 0 or batch_idx == len(dataloader):
+#             elapsed = time.time() - batch_start
+#             print(f"[Epoch {epoch+1} Batch {batch_idx}/{len(dataloader)}] "
+#                   f"Batch Loss: {loss.item():.4f}, "
+#                   f"Elapsed: {elapsed:.2f}s, "
+#                   f"GPU Memory Used: {torch.cuda.memory_allocated()/1024**3:.2f} GB")
+
+#     avg_loss = total_loss / len(dataloader)
+#     epoch_time = time.time() - start_epoch
+#     print(f"Epoch {epoch+1} Completed | Avg Loss: {avg_loss:.4f} | Time: {epoch_time/60:.2f} min")
