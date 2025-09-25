@@ -24,9 +24,10 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          IMAGE=ghcr.io/${{ github.repository }}:latest
+          IMAGE=ghcr.io/mdmohsin212/visual-product-search:latest
           docker build -t $IMAGE .
           docker push $IMAGE
+
 
       
       - name: Update Hugging Face Space
