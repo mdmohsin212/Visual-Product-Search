@@ -19,7 +19,9 @@ jobs:
         run: |
           git clone https://huggingface.co/spaces/mohsin416/visual-products space
           cd space
-          rsync -av --exclude='space' ../ ./ 
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          rsync -av --exclude='space' ../ ./
           git add .
           git commit -m "Sync from GitHub"
           git push https://username:${HF_TOKEN}@huggingface.co/spaces/mohsin416/visual-products
