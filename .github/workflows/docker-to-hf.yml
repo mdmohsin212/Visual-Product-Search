@@ -22,7 +22,7 @@ jobs:
           
           git clone https://huggingface.co/spaces/mohsin416/visual-products space
           
-          rsync -av --exclude='.git/' --exclude='.github/' --exclude='README.md' ./ space/
+          rsync -av --delete --exclude='.git/' --exclude='.github/' --exclude='README.md' --exclude='space' ./ space/
           
           cd space
           
