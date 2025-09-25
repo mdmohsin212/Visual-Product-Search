@@ -11,11 +11,6 @@ from visual_product_search.embeddings.model import load_model
 from visual_product_search.logger import logging
 from visual_product_search.exception import ExceptionHandle
 
-CACHE_DIR = "/app/.cache"
-os.makedirs(CACHE_DIR, exist_ok=True)
-os.environ["HF_HOME"] = CACHE_DIR
-os.environ["TRANSFORMERS_CACHE"] = CACHE_DIR
-
 class ProductPredictionPipeline:
     _model = None
     _processor = None
