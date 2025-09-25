@@ -1,4 +1,4 @@
-name: Deploy to Hugging Face
+name: Sync to Hugging Face Space
 
 on:
   push:
@@ -6,35 +6,20 @@ on:
       - main
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v5
 
-        
-      - name: Login to GHCR
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-
-      - name: Build and push Docker image
+      - name: Push to Hugging Face Space
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          IMAGE=ghcr.io/mdmohsin212/visual-product-search:latest
-          docker build -t $IMAGE .
-          docker push $IMAGE
-
-
-      
-      - name: Update Hugging Face Space
-        run: |
-          git clone https://username:${{ secrets.HF_TOKEN }}@huggingface.co/spaces/mohsin416/visual-products space
+          git clone https://huggingface.co/spaces/mohsin416/visual-products space
           cd space
-          echo "FROM ghcr.io/${{ github.repository }}:latest" > Dockerfile
-          git add Dockerfile
-          git commit -m "Update Space to latest image"
-          git push
+          cp -r ../* ./
+          git add .
+          git commit -m "Sync from GitHub"
+          git push https://username:${HF_TOKEN}@huggingface.co/spaces/mohsin416/visual-products
