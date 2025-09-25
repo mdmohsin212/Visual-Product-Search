@@ -17,11 +17,15 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          
           git clone https://huggingface.co/spaces/mohsin416/visual-products space
+          
+          rsync -av --exclude='.git/' --exclude='.github/' ./ space/
+          
           cd space
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          rsync -av --exclude='space' ../ ./
+          
           git add .
-          git commit -m "Sync from GitHub"
+          git commit -m "Sync from GitHub Actions"
           git push https://username:${HF_TOKEN}@huggingface.co/spaces/mohsin416/visual-products
