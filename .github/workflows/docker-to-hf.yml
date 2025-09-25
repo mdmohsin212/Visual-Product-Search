@@ -1,34 +1,39 @@
-name: Docker Build and Push to Hugging Face
+name: Deploy to Hugging Face
 
 on:
   push:
     branches:
-      - "main"
+      - main
 
 jobs:
-  build-and-push:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout repo
+        uses: actions/checkout@v5
 
         
-      - name: Log in to Hugging Face
-        uses: docker/login-action@v3
+      - name: Login to GHCR
+        uses: docker/login-action@v2
         with:
-          registry: huggingface.co
-          username: ${{ secrets.HF_TOKEN_USERNAME }}
-          password: ${{ secrets.HF_TOKEN }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push Docker image to Hugging Face
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: |
-            huggingface.co/mohsin416/visual-products:latest
-            huggingface.co/mohsin416/visual-products:${{ github.sha }}
+
+      - name: Build and push Docker image
+        run: |
+          IMAGE=ghcr.io/${{ github.repository }}:latest
+          docker build -t $IMAGE .
+          docker push $IMAGE
+
+      
+      - name: Update Hugging Face Space
+        run: |
+          git clone https://username:${{ secrets.HF_TOKEN }}@huggingface.co/spaces/mohsin416/visual-products space
+          cd space
+          echo "FROM ghcr.io/${{ github.repository }}:latest" > Dockerfile
+          git add Dockerfile
+          git commit -m "Update Space to latest image"
+          git push
