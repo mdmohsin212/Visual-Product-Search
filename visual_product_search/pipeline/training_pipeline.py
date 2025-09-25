@@ -1,7 +1,7 @@
 import torch, gc
 from torch.utils.data import DataLoader
 import numpy as np
-import environ
+import os
 from pathlib import Path
 import sys
 
@@ -19,8 +19,8 @@ from visual_product_search.exception import ExceptionHandle
 class VisualProductPipeline:
     def __init__(self, config_path="config/model.yaml"):
         try:
-            self.env = environ.Env()
-            environ.Env.read_env(Path(__file__).resolve().parent.parent / ".env")
+            # self.env = environ.Env()
+            # environ.Env.read_env(Path(__file__).resolve().parent.parent / ".env")
             self.config = load_config(config_path)
             
             self.cache_dir = Path("cache_dir")
@@ -96,11 +96,11 @@ class VisualProductPipeline:
         try:
             logging.info("Starting indexing")
             indexer = DatabaseIndexer(
-            uri=self.env("DATABASE_URL"),
-            user=self.env("USER"),
-            password=self.env("PASSWORD"),
-            token=self.env("TOKEN"),
-            collection_name=self.env("COLLECTION_NAME")
+            uri=os.getenv("DATABASE_URL"),
+            user=os.getenv("USER"),
+            password=os.getenv("PASSWORD"),
+            token=os.getenv("TOKEN"),
+            collection_name=os.getenv("COLLECTION_NAME")
             )
             indexer.insert_embeddings(embeddings, metadata, img_link)
             indexer.create_index()
@@ -114,12 +114,12 @@ class VisualProductPipeline:
             logging.info("Starting Pushing model & processor in Hugginface")
             model.push_to_hub(
                 self.config["model"]["new_model"],
-                token=self.env("HF_TOKEN"),
+                token=os.getenv("HF_TOKEN"),
                 check_pr=False
             )
             processor.push_to_hub(
             self.config["model"]["new_model"],
-            token=self.env("HF_TOKEN"),
+            token=os.getenv("HF_TOKEN"),
             check_pr=False
             )
             logging.info("Model pushed to Hugging Face Hub")

@@ -1,6 +1,7 @@
 import sys
 import environ
 from pathlib import Path
+import os
 from pymilvus import connections
 
 from visual_product_search.embeddings.embed import get_image_embedding, get_text_embedding
@@ -17,15 +18,20 @@ class ProductPredictionPipeline:
     _Database = None
     def __init__(self, config_path="config/model.yaml"):
         try:
-            self.env = environ.Env()
-            environ.Env.read_env(Path(__file__).resolve().parent.parent / ".env")
+            # self.env = environ.Env()
+            # environ.Env.read_env(Path(__file__).resolve().parent.parent / ".env")
             self.config = load_config(config_path)
             
-            connections.connect(alias="default", uri=self.env("DATABASE_URL"), user=self.env("USER"), password=self.env("PASSWORD"), token=self.env("TOKEN"))
+            connections.connect(alias="default", 
+                uri=os.getenv("DATABASE_URL"),
+                user=os.getenv("USER"),
+                password=os.getenv("PASSWORD"),
+                token=os.getenv("TOKEN"),
+            )
             
             if ProductPredictionPipeline._Database is None:
                 ProductPredictionPipeline._Database = DatabaseSearch(
-                    collection_name=self.env("COLLECTION_NAME")
+                    collection_name=os.getenv("COLLECTION_NAME")
                 )
 
         except Exception as e:
