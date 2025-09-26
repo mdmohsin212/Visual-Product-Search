@@ -21,7 +21,7 @@ class DatabaseSearch:
             result = self.collection.search(
                 data=query_vec,
                 anns_field="embedding",
-                param={"metric_type" : "COSINE", "params" : {"ef" : 32}},
+                param={"metric_type" : "COSINE", "params" : {"ef" : 64}},
                 limit=k,
                 output_fields=["metadata", "image_link"]
             )

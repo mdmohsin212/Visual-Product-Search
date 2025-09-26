@@ -8,7 +8,7 @@
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
-
+    <script src="https://unpkg.com/feather-icons"></script>
     <script>
       tailwind.config = {
         theme: {
@@ -92,6 +92,7 @@
 
       <!-- Search Container -->
       <div class="glass-card rounded-2xl p-6 mb-8 shadow-soft" data-aos="fade-up">
+        <!-- Search Form -->
         <form action="/predict" method="post" enctype="multipart/form-data">
           <!-- Text Search -->
           <div class="mb-8">
@@ -175,21 +176,11 @@
       <div class="glass-card rounded-2xl p-6 shadow-soft" data-aos="fade-up" data-aos-delay="100">
         <h2 class="text-xl font-semibold mb-6 text-gray-100">Search Results</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="results-container">
-          {% if results %}
-            {% for url in results %}
-              <div class="result-card bg-darkglass rounded-xl overflow-hidden transition-all">
-                <img src="{{ url }}" alt="Product Image" class="w-full h-48 object-cover"/>
-                <div class="p-4">
-                  <h3 class="font-medium mb-1">Product {{ loop.index }}</h3>
-                </div>
-              </div>
-            {% endfor %}
-          {% else %}
-            <div class="text-center py-12 text-gray-400 col-span-full flex flex-col items-center justify-center">
-              <i data-feather="search" class="w-10 h-10 mb-3"></i>
-              <p>Your search results will appear here</p>
-            </div>
-          {% endif %}
+          <!-- Results will be dynamically inserted here -->
+          <div class="text-center py-12 text-gray-400 col-span-full flex flex-col items-center justify-center">
+            <i data-feather="search" class="w-10 h-10 mb-3"></i>
+            <p>Your search results will appear here</p>
+          </div>
         </div>
       </div>
     </div>
@@ -211,6 +202,33 @@
           uploadText.classList.remove("text-green-400");
         }
       });
+
+      // Sample function to simulate search results
+      function showSampleResults() {
+        const container = document.getElementById("results-container");
+        container.innerHTML = "";
+
+        for (let i = 1; i <= 5; i++) {
+          container.innerHTML += `
+            <div class="result-card bg-darkglass rounded-xl overflow-hidden transition-all">
+              <div class="h-48 bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+                <i data-feather="box" class="w-12 h-12 text-white opacity-80"></i>
+              </div>
+              <div class="p-4">
+                <h3 class="font-medium mb-1">Product ${i}</h3>
+                <p class="text-sm text-gray-400 mb-2">Category ${i}</p>
+                <div class="flex justify-between items-center">
+                  <span class="text-primary font-medium">$${(i * 49.99).toFixed(2)}</span>
+                  <button class="text-xs px-3 py-1 rounded-full bg-gray-700 hover:bg-gray-600 transition">
+                    View Details
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+        }
+        feather.replace();
+      }
     </script>
   </body>
 </html>
