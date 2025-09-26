@@ -30,13 +30,15 @@ def predict():
                
         if request.form.get("text_field"):
             query = request.form["text_field"]
-            result = predictionPipeline.search_with_text(query, k)
-            return render_template("home.html", results=result)
+            outputs = predictionPipeline.search_with_text(query, k)
+            results = [item.entity['image_link'] for item in outputs[0]]
+            return render_template("home.html", results=results)
 
         elif "img_field" in request.files:
             img_file = request.files["img_field"]   
-            result = predictionPipeline.search_with_image(img_file, k)
-            return render_template("home.html", results=result)
+            outputs = predictionPipeline.search_with_image(img_file, k)
+            results = [item.entity['image_link'] for item in outputs[0]]
+            return render_template("home.html", results=results)
 
         else:
             return render_template("home.html", result="No input provided")
