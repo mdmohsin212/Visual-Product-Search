@@ -40,7 +40,7 @@ class ProductPredictionPipeline:
     
     def _load_model(self):
         if ProductPredictionPipeline._model is None:
-            ProductPredictionPipeline._model, ProductPredictionPipeline._processor, ProductPredictionPipeline._device = load_model_for_prediction(self.config["model"]["name"], self.config["model"]["lora_model"])
+            ProductPredictionPipeline._model, ProductPredictionPipeline._processor, ProductPredictionPipeline._device = load_model_for_prediction(self.config["model"]["name"], self.config["model"]["new_model"])
             logging.info("Model loaded successfully.")
     
     def search_with_image(self, image_path, k=5):
