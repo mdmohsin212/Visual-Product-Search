@@ -1,6 +1,6 @@
 import torch, gc
 from torch.utils.data import DataLoader
-import torch.nn.functional.normalize as F
+from torch.nn.functional import normalize
 import os
 from pathlib import Path
 import sys
