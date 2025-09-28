@@ -84,7 +84,7 @@ class VisualProductPipeline:
                             continue
 
                         img_embeds = model.get_image_features(pixel_values=imgs)
-                        img_embeds = F(img_embeds, dim=-1)
+                        img_embeds = normalize(img_embeds, dim=-1)
 
                         embeddings.append(img_embeds.cpu())
                         metadata.extend(caps)
