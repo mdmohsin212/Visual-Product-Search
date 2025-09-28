@@ -47,7 +47,7 @@ class DatabaseIndexer:
                 index_params = {
                     "index_type" : "HNSW",
                     "metric_type" : "COSINE",
-                    "params" : {"M" : 8, "efConstruction" : 64}
+                    "params" : {"M" : 48, "efConstruction" : 200}
                 }
                 self.collection.create_index(field_name="embedding", index_params=index_params)
                 logging.info("Index Created successfully")

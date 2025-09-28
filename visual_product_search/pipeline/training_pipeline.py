@@ -1,6 +1,6 @@
 import torch, gc
 from torch.utils.data import DataLoader
-import numpy as np
+import torch.nn.functional.normalize as F
 import os
 from pathlib import Path
 import sys
@@ -58,8 +58,6 @@ class VisualProductPipeline:
                 device,
                 epochs=self.config["model"]["epochs"],
                 lr=self.config["model"]["learning_rate"],
-                grad_accum_steps=self.config["model"]["grad_accum_steps"],
-                num_warmup_step=self.config["model"]["num_warmup_steps"]
             )
             logging.info("Model training completed")
             return trained_model
@@ -67,26 +65,43 @@ class VisualProductPipeline:
         except Exception as e:
             raise ExceptionHandle(e, sys)
     
-    def create_embeddings(self, df, img_dir, model, processor, device):
+    def create_embeddings(self, dataloader, model, device):
         try:
             logging.info("Creating embeddings")
             embeddings = []
-            metadata = []
             img_link = []
+            metadata = []
             
-            for row in df.itertuples(index=False):
-                img_path = f"{img_dir}/{row.filename}"
-                embd =  get_image_embedding(img_path, model, processor, device)
-                embeddings.append(embd)
-                img_link.append(row.link)
+            with torch.no_grad():
+                for batch in dataloader:
+                    try:
+                        imgs = batch["pixel_values"].to(device)
+                        caps = batch["caption"]
+                        links = batch["img_link"]
+
+                        if imgs is None or len(imgs) == 0:
+                            print("Image not found, skipping")
+                            continue
+
+                        img_embeds = model.get_image_features(pixel_values=imgs)
+                        img_embeds = F(img_embeds, dim=-1)
+
+                        embeddings.append(img_embeds.cpu())
+                        metadata.extend(caps)
+                        img_link.extend(links)
+
+                    except Exception as e:
+                        print(f"Skipping batch due to error: {e}")
+                        continue
+
+            if embeddings:
+                embeddings = torch.cat(embeddings, dim=0)
+            else:
+                embeddings = torch.empty(0)
                 
-                filtered_row = row._asdict()
-                filtered_row.pop("filename", None)
-                filtered_row.pop("link", None)
-                metadata.append(" ".join(str(v) for v in filtered_row.values()))
-            
-            embeddings = np.vstack(embeddings)
-            logging.info(f"create embeddings for {len(df)} samples")
+            logging.info(f"Embeddings shape: {embeddings.shape}")
+            logging.info(f"Metadata length: {len(metadata)}")
+            logging.info(f"Image links length: {len(img_link)}")
             return embeddings, metadata, img_link
         
         except Exception as e:
@@ -133,7 +148,7 @@ class VisualProductPipeline:
             df, img_dir = self.data_ingestion()
             model, processor, device = self.model_loading()
             
-            dataset = ProductDataset(df, processor, img_dir, str(self.cache_dir))
+            dataset = ProductDataset(df, img_dir, processor, str(self.cache_dir))
             
             dataloader = DataLoader(
                 dataset,
@@ -148,7 +163,7 @@ class VisualProductPipeline:
             trained_model = self.start_training(model, dataloader, device)
             self.push_hub(trained_model, processor)
             
-            embeddings, metadata, img_link = self.create_embeddings(df, img_dir, trained_model, processor, device)
+            embeddings, metadata, img_link = self.create_embeddings(dataloader, trained_model, device)
             self.start_indexing(embeddings, metadata, img_link)
             
             del model, processor, trained_model
