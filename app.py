@@ -47,5 +47,6 @@ def predict():
         logging.critical(f"Prediction Failed: {e}")
         raise ExceptionHandle(e, sys)
 
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=7860)
