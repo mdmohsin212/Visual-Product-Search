@@ -14,6 +14,10 @@ def home():
     return render_template("home.html")
 
 @app.route("/train", methods=["GET"])
+def train_page():
+    return render_template("train.html")
+
+@app.route("/train_model", methods=["GET"])
 def model_train():
     try:
         pipeline = VisualProductPipeline()
