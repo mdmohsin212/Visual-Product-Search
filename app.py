@@ -2,12 +2,12 @@ from visual_product_search.pipeline.training_pipeline import VisualProductPipeli
 from visual_product_search.pipeline.prediction_pipeline import ProductPredictionPipeline
 from visual_product_search.logger import logging
 from visual_product_search.exception import ExceptionHandle
-
 from flask import Flask, render_template, request
 import sys
 
 app = Flask(__name__)
 predictionPipeline = ProductPredictionPipeline()
+
 
 @app.route("/", methods=["GET"])
 def home():
