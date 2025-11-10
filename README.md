@@ -1,1 +1,1 @@
-visual product search ecommarce
+visual product search
