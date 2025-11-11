@@ -1,1 +1,1 @@
-visual product search
+Visual product search
