@@ -12,7 +12,7 @@ predictionPipeline = ProductPredictionPipeline()
 @app.route("/", methods=["GET"])
 def home():
     return render_template("home.html")
-
+    
 @app.route("/train", methods=["GET"])
 def train_page():
     return render_template("train.html")
