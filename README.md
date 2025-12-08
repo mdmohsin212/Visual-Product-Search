@@ -101,31 +101,24 @@ The model has been rigorously validated using standard Information Retrieval met
 
 Recall measures the proportion of relevant items retrieved in the top _k_ results.
 
-| Metric | Score | Metric | Score |
-| --- | --- | --- | --- |
-| **Recall@1** | 0.2602 | **Recall@40** | 0.9232 |
-| **Recall@5** | 0.5644 | **Recall@50** | 0.9410 |
-| **Recall@10** | 0.7008 | **Recall@60** | 0.9534 |
-| **Recall@15** | 0.7770 | **Recall@70** | 0.9644 |
-| **Recall@20** | 0.8270 | **Recall@80** | 0.9700 |
-| **Recall@25** | 0.8626 | **Recall@90** | 0.9744 |
-| **Recall@30** | 0.8896 | **Recall@100** | 0.9780 |
-| **Recall@35** | 0.9092 | **Recall@200** | 0.9922 |
+| Metric        | Score  | Metric         | Score  |
+| ------------- | ------ | -------------- | ------ |
+| **Recall@1**  | 0.2602 | **Recall@30**  | 0.8896 |
+| **Recall@5**  | 0.5644 | **Recall@50**  | 0.9410 |
+| **Recall@10** | 0.7008 | **Recall@100** | 0.9780 |
+| **Recall@20** | 0.8270 | **Recall@200** | 0.9922 |
+
 
 ### Validation NDCG Metrics
 
 Normalized Discounted Cumulative Gain (NDCG) accounts for the position of relevant items in the ranking.
 
-| Metric | Score | Metric | Score |
-| --- | --- | --- | --- |
-| **NDCG@1** | 0.2602 | **NDCG@40** | 0.5150 |
-| **NDCG@5** | 0.4191 | **NDCG@50** | 0.5183 |
-| **NDCG@10** | 0.4632 | **NDCG@60** | 0.5204 |
-| **NDCG@15** | 0.4834 | **NDCG@70** | 0.5222 |
-| **NDCG@20** | 0.4952 | **NDCG@80** | 0.5231 |
-| **NDCG@25** | 0.5030 | **NDCG@90** | 0.5238 |
-| **NDCG@30** | 0.5085 | **NDCG@100** | 0.5243 |
-| **NDCG@35** | 0.5124 | **NDCG@200** | 0.5264 |
+| Metric      | Score  | Metric       | Score  |
+| ----------- | ------ | ------------ | ------ |
+| **NDCG@1**  | 0.2602 | **NDCG@30**  | 0.5085 |
+| **NDCG@5**  | 0.4191 | **NDCG@50**  | 0.5183 |
+| **NDCG@10** | 0.4632 | **NDCG@100** | 0.5243 |
+| **NDCG@20** | 0.4952 | **NDCG@200** | 0.5264 |
 
 ## 🤝 Contributing
 
