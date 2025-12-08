@@ -1,11 +1,9 @@
-# Visual Product Search
-
-A powerful visual search engine designed specifically for the fashion domain. This application allows users to search for similar fashion products using image queries, leveraging a state-of-the-art fine-tuned CLIP model.
-
 ## 🚀 Overview
 
+**Visual Product Search** is a powerful **Content-Based Image Retrieval (CBIR)** system built for the fashion domain.  
+It enables users to find visually similar fashion products using **image queries**, powered by a state-of-the-art **CLIP (ViT-L/14)** embedding model.
 
-This project implements a Content-Based Image Retrieval (CBIR) system. It uses deep learning to understand the visual content of fashion images and retrieve the most semantically similar products from a large database.
+The system understands the semantic and visual characteristics of fashion items and retrieves the closest matches from a large product database—making it ideal for recommendation engines, e-commerce search, and style discovery.
 
 ### Key Features
 
@@ -115,8 +113,6 @@ Recall measures the proportion of relevant items retrieved in the top _k_ result
 | **Recall@35** | 0.9092 | **Recall@200** | 0.9922 |
 
 ### Validation NDCG Metrics
-
-# 
 
 Normalized Discounted Cumulative Gain (NDCG) accounts for the position of relevant items in the ranking.
 
