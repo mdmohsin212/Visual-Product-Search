@@ -1,6 +1,4 @@
-<<<<<<< HEAD
 # Visual Product Search
-
 
 A powerful visual search engine designed specifically for the fashion domain. This application allows users to search for similar fashion products using image queries, leveraging a state-of-the-art fine-tuned CLIP model.
 
@@ -46,8 +44,7 @@ Follow these steps to run the project locally on your machine.
 
 # 
 
-    git clone [https://github.com/mdmohsin212/Visual-Product-Search.git](https://github.com/mdmohsin212/Visual-Product-Search.git)
-    cd Visual-Product-Search
+    git clone https://github.com/mdmohsin212/Visual-Product-Search.git
     
 
 ### 2\. Create a Virtual Environment (Recommended)
@@ -140,7 +137,4 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 📄 License 
 
-This project is open-source and available under the [MIT License](https://www.google.com/search?q=LICENSE "null").
-=======
-Visual product search
->>>>>>> 29a283d9e24b13d486da16482763f9f849767099
+This project is open-source and available under the [MIT License](https://github.com/mdmohsin212/Visual-Product-Search/blob/main/LICENCE).
