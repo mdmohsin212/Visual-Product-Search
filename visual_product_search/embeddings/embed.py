@@ -12,7 +12,7 @@ def get_text_embedding(model : CLIPModel, processor : CLIPProcessor, text, devic
 
         with torch.no_grad():
             txt_emb = model.get_text_features(**inputs)
-            txt_emb = torch.nn.functional.normalize(txt_emb, dim=-1)
+            txt_emb = torch.nn.functional.normalize(txt_emb, p=2, dim=-1)
             
         logging.debug(f"Image embedding generated for {text}")
         return txt_emb.cpu().numpy().tolist()[0]
