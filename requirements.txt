@@ -1,6 +1,6 @@
 flask
 torch
-transformers==4.30.0
+transformers==4.30.2
 Pillow
 pandas
 kagglehub
