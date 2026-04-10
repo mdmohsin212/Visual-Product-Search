@@ -25,7 +25,7 @@ def load_model_for_prediction(base_model_name : str, lora_model : str, device : 
         print(f"Loading CLIP model {base_model_name} on {device}")
         
         base_model = CLIPModel.from_pretrained(base_model_name)
-        model = PeftModel.from_pretrained(base_model, lora_model).to(device)
+        model = PeftModel.from_pretrained(base_model, lora_model, device_map={"", device})
         processor = CLIPProcessor.from_pretrained(lora_model)
         print("Model and processor loaded successfully")
         model.eval()
