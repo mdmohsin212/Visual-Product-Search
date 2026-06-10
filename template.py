@@ -34,9 +34,9 @@ list_of_files = [
     f"{project_name}/utils/config.py",
     f"{project_name}/utils/storage.py",
     
-    "artifacts/evaluation/image_to_image_metrics.json"
-    "artifacts/evaluation/image_to_image_category_breakdown.csv"
-    "artifacts/evaluation/error_cases.csv"
+    "artifacts/evaluation/image_to_image_metrics.json",
+    "artifacts/evaluation/image_to_image_category_breakdown.csv",
+    "artifacts/evaluation/error_cases.csv",
     
     ".github/workflows/docker-to-hf.yml",
     

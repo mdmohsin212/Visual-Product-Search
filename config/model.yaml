@@ -1,9 +1,71 @@
 model:
   name: "openai/clip-vit-large-patch14"
-  learning_rate: 1e-4
+  new_model: "mohsin416/fashion-clip-vit-large"
+  repo_id: "mohsin416/fashion-clip-vit-large"
+  learning_rate: 0.0001
   batch_size: 32
   epochs: 10
-  new_model: "mohsin416/fashion-clip-vit-large"
+  device: "auto"
+
+data:
+  dataset_name: "paramaggarwal/fashion-product-images-dataset"
+  image_dir: "artifacts/images"
+  metadata_path: "artifacts/styles.csv"
+  split_path: "artifacts/splits.json"
+  metadata_aligned_path: "artifacts/embeddings/metadata_aligned.csv"
+  id_column: "id"
+  image_column: "image"
+  gender_column: "gender"
+  master_category_column: "masterCategory"
+  sub_category_column: "subCategory"
+  article_type_column: "articleType"
+  base_colour_column: "baseColour"
+
+embeddings:
+  dimension: 768
+  normalize: true
+  batch_size: 32
+  output_path: "artifacts/embeddings/image_embeddings.npy"
 
 index:
   dimension: 768
+  similarity: "cosine"
+  backend: "numpy"
+  top_k: 10
+  index_path: "artifacts/index/image_index.npy"
+  embedding_path: "artifacts/embeddings/image_embeddings.npy"
+  metadata_path: "artifacts/embeddings/metadata_aligned.csv"
+
+evaluation:
+  enabled: true
+  task: "image_to_image_retrieval"
+  k_values: [1, 5, 10, 20, 50, 100]
+  seed: 42
+  max_queries: null
+  exclude_self_match: true
+  relevance_levels:
+    strict:
+      fields: ["articleType"]
+      description: "Relevant if retrieved item has the same articleType as the query."
+
+    medium:
+      fields: ["subCategory"]
+      description: "Relevant if retrieved item has the same subCategory as the query."
+
+    soft:
+      fields: ["gender", "masterCategory"]
+      description: "Relevant if retrieved item has the same gender and masterCategory as the query."
+
+  output_dir: "artifacts/evaluation"
+  metrics_output_path: "artifacts/evaluation/image_to_image_metrics.json"
+  category_breakdown_output_path: "artifacts/evaluation/image_to_image_category_breakdown.csv"
+  error_cases_output_path: "artifacts/evaluation/error_cases.csv"
+
+
+benchmark:
+  enabled: true
+  warmup_runs: 5
+  num_runs: 100
+  top_k: 10
+  output_dir: "artifacts/benchmark"
+  output_path: "artifacts/benchmark/benchmark_results.json"

@@ -1,10 +1,58 @@
 model:
-  name : str
-  learning_rate : float
-  batch_size : int
-  epochs : int
-  lora_model: str
+  name: str
+  new_model: str
+  repo_id: str
+  learning_rate: float
+  batch_size: int
+  epochs: int
+  device: str
 
+data:
+  dataset_name: str
+  image_dir: str
+  metadata_path: str
+  split_path: str
+  metadata_aligned_path: str
+  id_column: str
+  image_column: str
+  gender_column: str
+  master_category_column: str
+  sub_category_column: str
+  article_type_column: str
+  base_colour_column: str
+
+embeddings:
+  dimension: int
+  normalize: bool
+  batch_size: int
+  output_path: str
 
 index:
-  dimension : int
+  dimension: int
+  similarity: str
+  backend: str
+  top_k: int
+  index_path: str
+  embedding_path: str
+  metadata_path: str
+
+evaluation:
+  enabled: bool
+  task: str
+  k_values: list
+  seed: int
+  max_queries: any
+  exclude_self_match: bool
+  relevance_levels: dict
+  output_dir: str
+  metrics_output_path: str
+  category_breakdown_output_path: str
+  error_cases_output_path: str
+
+benchmark:
+  enabled: bool
+  warmup_runs: int
+  num_runs: int
+  top_k: int
+  output_dir: str
+  output_path: str
