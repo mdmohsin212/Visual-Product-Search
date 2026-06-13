@@ -1,5 +1,6 @@
 import sys
 import yaml
+from pathlib import Path
 from visual_product_search.logger import logging
 from visual_product_search.exception import ExceptionHandle
 
