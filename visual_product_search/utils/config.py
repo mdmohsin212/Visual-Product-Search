@@ -1,4 +1,5 @@
 import sys
+import json
 from pathlib import Path
 import yaml
 from visual_product_search.logger import logging
@@ -23,3 +24,20 @@ def load_config(path: str = "config/model.yaml"):
     except Exception as e:
         logging.error(f"Error loading config {path}")
         raise ExceptionHandle(e, sys)
+    
+
+
+def load_json_file(path):
+    file_path = Path(path)
+    if not file_path.exists() or file_path.stat().st_size == 0:
+        return None
+
+    with open(file_path, "r", encoding="utf-8") as f:
+        return json.load(f)
+    
+    
+def to_percent(value):
+    try:
+        return round(float(value) * 100, 2)
+    except Exception:
+        return 0.0
