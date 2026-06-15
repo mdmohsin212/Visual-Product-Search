@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Evaluation Results | Visual Product Search</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "rgba(99, 102, 241, 0.8)",
+              secondary: "rgba(168, 85, 247, 0.8)",
+              darkglass: "rgba(15, 23, 42, 0.7)",
+            },
+            boxShadow: {
+              glow: "0 0 15px rgba(168, 85, 247, 0.5)",
+              soft: "0 4px 30px rgba(0, 0, 0, 0.1)",
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+
+      body {
+        font-family: "Inter", sans-serif;
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        min-height: 100vh;
+        color: white;
+      }
+
+      .glass-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .btn-gradient {
+        background: linear-gradient(
+          45deg,
+          rgba(99, 102, 241, 0.8) 0%,
+          rgba(168, 85, 247, 0.8) 100%
+        );
+      }
+    </style>
+  </head>
+
+  <body class="min-h-screen py-10 px-4 sm:px-6 lg:px-8">
+    <div class="w-full max-w-6xl mx-auto">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-10">
+        <div>
+          <h1 class="text-4xl sm:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary mb-3">
+            Evaluation Dashboard
+          </h1>
+          <p class="text-gray-300">
+            Precomputed evaluation and benchmark results for Visual Product Search
+          </p>
+        </div>
+
+        <a href="/" class="btn-gradient px-5 py-3 rounded-xl font-medium text-white shadow-glow text-center">
+          Back to Search
+        </a>
+      </div>
+
+      {% if evaluation %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div class="glass-card rounded-2xl p-5 shadow-soft">
+            <p class="text-gray-400 text-sm mb-2">Indexed Images</p>
+            <h2 class="text-3xl font-bold">{{ "{:,}".format(evaluation.num_indexed_images) }}</h2>
+          </div>
+
+          <div class="glass-card rounded-2xl p-5 shadow-soft">
+            <p class="text-gray-400 text-sm mb-2">Evaluation Queries</p>
+            <h2 class="text-3xl font-bold">{{ "{:,}".format(evaluation.num_queries) }}</h2>
+          </div>
+
+          <div class="glass-card rounded-2xl p-5 shadow-soft">
+            <p class="text-gray-400 text-sm mb-2">Embedding Dimension</p>
+            <h2 class="text-3xl font-bold">{{ evaluation.embedding_dimension }}</h2>
+          </div>
+
+          <div class="glass-card rounded-2xl p-5 shadow-soft">
+            <p class="text-gray-400 text-sm mb-2">Self-Match Excluded</p>
+            <h2 class="text-3xl font-bold">
+              {% if evaluation.exclude_self_match %}Yes{% else %}No{% endif %}
+            </h2>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <div class="glass-card rounded-2xl p-5 shadow-soft">
+            <p class="text-gray-400 text-sm mb-2">Article Type Precision@5</p>
+            <h2 class="text-3xl font-bold text-green-300">{{ evaluation.main_cards.article_precision_5 }}%</h2>
+          </div>
+
+          <div class="glass-card rounded-2xl p-5 shadow-soft">
+            <p class="text-gray-400 text-sm mb-2">Subcategory Precision@5</p>
+            <h2 class="text-3xl font-bold text-green-300">{{ evaluation.main_cards.subcategory_precision_5 }}%</h2>
+          </div>
+
+          <div class="glass-card rounded-2xl p-5 shadow-soft">
+            <p class="text-gray-400 text-sm mb-2">Gender + Master Category Precision@5</p>
+            <h2 class="text-3xl font-bold text-green-300">{{ evaluation.main_cards.gender_master_precision_5 }}%</h2>
+          </div>
+        </div>
+
+        <div class="glass-card rounded-2xl p-6 shadow-soft mb-8 overflow-x-auto">
+          <h2 class="text-2xl font-semibold mb-2">Image-to-Image Retrieval Evaluation</h2>
+          <p class="text-gray-400 mb-6">
+            Model: {{ evaluation.model }} | Dataset: {{ evaluation.dataset }}
+          </p>
+
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-gray-700 text-gray-300">
+                <th class="py-3 pr-4">Match Type</th>
+                <th class="py-3 pr-4">Definition</th>
+                <th class="py-3 pr-4">Precision@5</th>
+                <th class="py-3 pr-4">NDCG@10</th>
+                <th class="py-3 pr-4">mAP@10</th>
+                <th class="py-3 pr-4">MRR@10</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {% for row in evaluation.rows %}
+                <tr class="border-b border-gray-800">
+                  <td class="py-4 pr-4 font-medium">{{ row.name }}</td>
+                  <td class="py-4 pr-4 text-gray-400">{{ row.definition }}</td>
+                  <td class="py-4 pr-4">{{ row.precision_5 }}%</td>
+                  <td class="py-4 pr-4">{{ row.ndcg_10 }}%</td>
+                  <td class="py-4 pr-4">{{ row.map_10 }}%</td>
+                  <td class="py-4 pr-4">{{ row.mrr_10 }}%</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="glass-card rounded-2xl p-8 shadow-soft mb-8">
+          <h2 class="text-2xl font-semibold mb-3">Evaluation Results Not Available</h2>
+          <p class="text-gray-300 mb-4">
+            Run evaluation locally and save the generated JSON file before showing this dashboard.
+          </p>
+          <pre class="bg-slate-950 text-gray-300 p-4 rounded-xl overflow-x-auto">python -m visual_product_search.evaluation.evaluate_image_to_image</pre>
+        </div>
+      {% endif %}
+
+      {% if benchmark %}
+        <div class="glass-card rounded-2xl p-6 shadow-soft overflow-x-auto">
+          <h2 class="text-2xl font-semibold mb-2">Search Benchmark</h2>
+          <p class="text-gray-400 mb-6">
+            Search latency measured using precomputed embeddings.
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div class="bg-darkglass rounded-xl p-4">
+              <p class="text-gray-400 text-sm mb-2">Mean Latency</p>
+              <h3 class="text-2xl font-bold">{{ benchmark.mean }} ms</h3>
+            </div>
+
+            <div class="bg-darkglass rounded-xl p-4">
+              <p class="text-gray-400 text-sm mb-2">P50 Latency</p>
+              <h3 class="text-2xl font-bold">{{ benchmark.p50 }} ms</h3>
+            </div>
+
+            <div class="bg-darkglass rounded-xl p-4">
+              <p class="text-gray-400 text-sm mb-2">P95 Latency</p>
+              <h3 class="text-2xl font-bold">{{ benchmark.p95 }} ms</h3>
+            </div>
+
+            <div class="bg-darkglass rounded-xl p-4">
+              <p class="text-gray-400 text-sm mb-2">P99 Latency</p>
+              <h3 class="text-2xl font-bold">{{ benchmark.p99 }} ms</h3>
+            </div>
+          </div>
+
+          <table class="w-full text-left border-collapse">
+            <tbody>
+              <tr class="border-b border-gray-800">
+                <td class="py-3 pr-4 text-gray-400">Top-K</td>
+                <td class="py-3 pr-4">{{ benchmark.top_k }}</td>
+              </tr>
+              <tr class="border-b border-gray-800">
+                <td class="py-3 pr-4 text-gray-400">Measured Runs</td>
+                <td class="py-3 pr-4">{{ benchmark.num_runs }}</td>
+              </tr>
+              <tr class="border-b border-gray-800">
+                <td class="py-3 pr-4 text-gray-400">Embedding File Size</td>
+                <td class="py-3 pr-4">{{ benchmark.embedding_file_mb }} MB</td>
+              </tr>
+              <tr>
+                <td class="py-3 pr-4 text-gray-400">Metadata File Size</td>
+                <td class="py-3 pr-4">{{ benchmark.metadata_file_mb }} MB</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="glass-card rounded-2xl p-8 shadow-soft">
+          <h2 class="text-2xl font-semibold mb-3">Benchmark Results Not Available</h2>
+          <p class="text-gray-300 mb-4">
+            Run benchmark locally after generating embeddings.
+          </p>
+          <pre class="bg-slate-950 text-gray-300 p-4 rounded-xl overflow-x-auto">python -m visual_product_search.evaluation.benchmark</pre>
+        </div>
+      {% endif %}
+    </div>
+  </body>
+</html>
