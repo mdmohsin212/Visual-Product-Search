@@ -41,7 +41,7 @@ evaluation:
   task: "image_to_image_retrieval"
   k_values: [1, 5, 10, 20, 50, 100]
   seed: 42
-  max_queries: null
+  max_queries: 500
   exclude_self_match: true
   relevance_levels:
     strict:

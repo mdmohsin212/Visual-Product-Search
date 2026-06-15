@@ -1,0 +1,25 @@
+{
+  "benchmark_type": "image_to_image_search_latency",
+  "num_indexed_images": 44065,
+  "metadata_rows": 44065,
+  "embedding_dimension": 768,
+  "top_k": 10,
+  "warmup_runs": 5,
+  "num_runs": 100,
+  "latency_ms": {
+    "mean": 10.4144,
+    "min": 3.2936,
+    "p50": 8.6958,
+    "p95": 20.1617,
+    "p99": 24.5445,
+    "max": 25.6564
+  },
+  "artifact_sizes": {
+    "embedding_file_mb": 129.0968,
+    "metadata_file_mb": 16.4993
+  },
+  "artifacts": {
+    "embedding_path": "/artifacts/embeddings/image_embeddings.npy",
+    "metadata_path": "/artifacts/embeddings/metadata_aligned.csv"
+  }
+}
