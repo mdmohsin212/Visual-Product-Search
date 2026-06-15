@@ -1,9 +1,10 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Visual Product Search</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
@@ -14,201 +15,484 @@
         theme: {
           extend: {
             colors: {
-              primary: "rgba(99, 102, 241, 0.8)",
-              secondary: "rgba(168, 85, 247, 0.8)",
-              glass: "rgba(255, 255, 255, 0.1)",
-              darkglass: "rgba(15, 23, 42, 0.7)",
+              primary: "rgba(99, 102, 241, 0.9)",
+              secondary: "rgba(168, 85, 247, 0.9)",
+              darkglass: "rgba(15, 23, 42, 0.72)",
             },
             boxShadow: {
-              glow: "0 0 15px rgba(168, 85, 247, 0.5)",
-              soft: "0 4px 30px rgba(0, 0, 0, 0.1)",
-            },
-            backdropBlur: {
-              xs: "4px",
+              glow: "0 0 18px rgba(168, 85, 247, 0.45)",
+              soft: "0 4px 30px rgba(0, 0, 0, 0.18)",
             },
           },
         },
       };
     </script>
+
     <style>
-      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+
       body {
         font-family: "Inter", sans-serif;
-        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        background:
+          radial-gradient(
+            circle at top left,
+            rgba(99, 102, 241, 0.18),
+            transparent 35%
+          ),
+          radial-gradient(
+            circle at top right,
+            rgba(168, 85, 247, 0.16),
+            transparent 35%
+          ),
+          linear-gradient(135deg, #0f172a 0%, #111827 50%, #1e1b4b 100%);
         min-height: 100vh;
         color: white;
       }
+
       .glass-card {
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
+        background: rgba(255, 255, 255, 0.06);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
         border: 1px solid rgba(255, 255, 255, 0.1);
       }
+
       .input-glow:focus {
         box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.5);
       }
+
       .btn-gradient {
         background: linear-gradient(
           45deg,
-          rgba(99, 102, 241, 0.8) 0%,
-          rgba(168, 85, 247, 0.8) 100%
+          rgba(99, 102, 241, 0.95) 0%,
+          rgba(168, 85, 247, 0.95) 100%
         );
-        transition: all 0.3s ease;
+        transition: all 0.25s ease;
       }
+
       .btn-gradient:hover {
         transform: translateY(-2px);
-        box-shadow: 0 10px 20px -10px rgba(168, 85, 247, 0.6);
+        box-shadow: 0 12px 24px -12px rgba(168, 85, 247, 0.7);
       }
+
+      .btn-outline {
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background: rgba(255, 255, 255, 0.04);
+        transition: all 0.25s ease;
+      }
+
+      .btn-outline:hover {
+        border-color: rgba(168, 85, 247, 0.8);
+        background: rgba(168, 85, 247, 0.08);
+      }
+
+      .upload-area {
+        border: 2px dashed rgba(255, 255, 255, 0.28);
+        transition: all 0.25s ease;
+      }
+
+      .upload-area:hover,
+      .upload-area.drag-over {
+        border-color: rgba(168, 85, 247, 0.9);
+        background: rgba(168, 85, 247, 0.08);
+      }
+
       .result-card {
-        transition: all 0.3s ease;
+        transition: all 0.25s ease;
       }
+
       .result-card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 15px 30px -10px rgba(168, 85, 247, 0.4);
+        box-shadow: 0 18px 32px -18px rgba(168, 85, 247, 0.6);
       }
-      .upload-area {
-        border: 2px dashed rgba(255, 255, 255, 0.3);
-        transition: all 0.3s ease;
+
+      .result-image {
+        background: rgba(15, 23, 42, 0.7);
       }
-      .upload-area:hover {
-        border-color: rgba(168, 85, 247, 0.8);
-        background: rgba(168, 85, 247, 0.05);
+
+      .loader {
+        border: 3px solid rgba(255, 255, 255, 0.2);
+        border-top: 3px solid rgba(168, 85, 247, 0.95);
+        border-radius: 50%;
+        width: 22px;
+        height: 22px;
+        animation: spin 0.8s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
       }
     </style>
   </head>
-  <body class="min-h-screen flex flex-col items-center justify-start py-12 px-4 sm:px-6 lg:px-8">
-    <div class="w-full max-w-4xl mx-auto">
-      <!-- Title -->
-      <div class="text-center mb-12" data-aos="fade-down">
+
+  <body class="min-h-screen py-10 px-4 sm:px-6 lg:px-8">
+    <div class="w-full max-w-6xl mx-auto">
+      <div class="text-center mb-10" data-aos="fade-down">
+        <div
+          class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card text-sm text-gray-300 mb-5"
+        >
+          <i data-feather="zap" class="w-4 h-4 text-purple-300"></i>
+          <span>Fine-tuned CLIP-powered fashion retrieval</span>
+        </div>
+
         <h1
-          class="text-4xl sm:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary mb-4"
+          class="text-4xl sm:text-6xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-300 via-purple-300 to-pink-300 mb-5"
         >
           Visual Product Search
         </h1>
-        <p class="text-gray-300 max-w-md mx-auto">
-          Discover products through text or image search with AI-powered results
+
+        <p
+          class="text-gray-300 max-w-2xl mx-auto text-base sm:text-lg leading-relaxed"
+        >
+          Upload a fashion product image or search with text to discover
+          visually similar products from an indexed fashion catalog.
         </p>
+
+        <div
+          class="flex flex-col sm:flex-row items-center justify-center gap-3 mt-7"
+        >
+          <a
+            href="/evaluation"
+            class="btn-gradient px-5 py-3 rounded-xl font-semibold text-white shadow-glow inline-flex items-center gap-2"
+          >
+            <i data-feather="bar-chart-2" class="w-5 h-5"></i>
+            <span>View Evaluation</span>
+          </a>
+
+          <a
+            href="/health"
+            class="btn-outline px-5 py-3 rounded-xl font-semibold text-gray-200 inline-flex items-center gap-2"
+          >
+            <i data-feather="activity" class="w-5 h-5"></i>
+            <span>Health Check</span>
+          </a>
+        </div>
       </div>
 
-      <!-- Search Container -->
-      <div class="glass-card rounded-2xl p-6 mb-8 shadow-soft" data-aos="fade-up">
-        <form action="/predict" method="post" enctype="multipart/form-data">
-          <!-- Text Search -->
-          <div class="mb-8">
-            <div class="flex flex-col sm:flex-row gap-4">
-              <div class="flex-grow">
+      <div
+        class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8"
+        data-aos="fade-up"
+      >
+        <div class="glass-card rounded-2xl p-5 shadow-soft text-center">
+          <p class="text-gray-400 text-sm mb-2">Indexed Images</p>
+          <h2 class="text-3xl font-bold">44,065</h2>
+        </div>
+
+        <div class="glass-card rounded-2xl p-5 shadow-soft text-center">
+          <p class="text-gray-400 text-sm mb-2">Article Type Precision@5</p>
+          <h2 class="text-3xl font-bold text-green-300">86.32%</h2>
+        </div>
+
+        <div class="glass-card rounded-2xl p-5 shadow-soft text-center">
+          <p class="text-gray-400 text-sm mb-2">Subcategory Precision@5</p>
+          <h2 class="text-3xl font-bold text-green-300">96.40%</h2>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div
+          class="glass-card rounded-2xl p-6 shadow-soft flex flex-col min-h-[360px]"
+          data-aos="fade-up"
+        >
+          <div class="flex items-center gap-3 mb-5">
+            <div
+              class="w-11 h-11 rounded-xl bg-indigo-500/20 flex items-center justify-center"
+            >
+              <i data-feather="type" class="w-5 h-5 text-indigo-300"></i>
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold">Text Search</h2>
+              <p class="text-gray-400 text-sm">Search by fashion description</p>
+            </div>
+          </div>
+
+          <form
+            action="/predict"
+            method="post"
+            class="search-form flex flex-col flex-1"
+          >
+            <div class="space-y-4">
+              <input
+                type="text"
+                placeholder="Example: men's black running shoes"
+                class="w-full px-5 py-3 rounded-xl bg-darkglass border border-gray-700 text-white placeholder-gray-400 focus:outline-none input-glow transition-all"
+                name="text_field"
+                required
+              />
+
+              <div class="flex items-center justify-between gap-4">
+                <label class="text-gray-300 text-sm">Results</label>
                 <input
-                  type="text"
-                  placeholder="Search for products..."
-                  class="w-full px-5 py-3 rounded-xl bg-darkglass border border-gray-700 text-white placeholder-gray-400 focus:outline-none input-glow transition-all"
-                  name="text_field"
+                  type="number"
+                  min="1"
+                  max="20"
+                  value="5"
+                  name="k"
+                  class="w-24 px-3 py-2 rounded-lg bg-darkglass border border-gray-700 text-white focus:outline-none input-glow"
                 />
               </div>
-              <button
-                class="btn-gradient px-6 py-3 rounded-xl font-medium text-white shadow-glow"
-                type="submit"
-              >
-                <div class="flex items-center justify-center gap-2">
-                  <i data-feather="search"></i>
-                  <span>Search by Text</span>
-                </div>
-              </button>
             </div>
-          </div>
-
-          <!-- Divider -->
-          <div class="relative mb-8">
-            <div class="absolute inset-0 flex items-center">
-              <div class="w-full border-t border-gray-700"></div>
-            </div>
-            <div class="relative flex justify-center">
-              <span class="px-3 bg-gray-900 text-sm text-gray-400">OR</span>
-            </div>
-          </div>
-
-          <!-- Image Search -->
-          <div class="mb-6">
-            <label class="upload-area rounded-xl p-8 text-center cursor-pointer mb-4 block" id="uploadLabel">
-              <div class="flex flex-col items-center justify-center">
-                <i data-feather="upload" class="w-12 h-12 text-gray-400 mb-3"></i>
-                <p class="text-gray-300 mb-1" id="uploadText">Drag & drop an image here</p>
-                <p class="text-sm text-gray-500">or click to browse files</p>
-              </div>
-              <input
-                type="file"
-                accept=".jpg,.jpeg,.png,.gif,.webp"
-                class="hidden"
-                id="imageUpload"
-                name="img_field"
-              />
-            </label>
 
             <button
-              class="btn-gradient w-full sm:w-auto px-6 py-3 rounded-xl font-medium text-white shadow-glow"
+              class="btn-gradient w-full px-6 py-3 rounded-xl font-semibold text-white shadow-glow mt-auto"
               type="submit"
             >
-              <div class="flex items-center justify-center gap-2">
-                <i data-feather="image"></i>
-                <span>Search by Image</span>
-              </div>
+              <span
+                class="button-content flex items-center justify-center gap-2"
+              >
+                <i data-feather="search" class="w-5 h-5"></i>
+                <span>Search by Text</span>
+              </span>
             </button>
-          </div>
+          </form>
+        </div>
 
-
-          <div class="flex items-center justify-between mt-6 pt-6 border-t border-gray-700">
-            <label class="text-gray-300">Number of results:</label>
-            <div class="relative">
-              <input
-                type="number"
-                min="1"
-                max="20"
-                value="5"
-                name="k"
-                class="w-20 px-3 py-2 rounded-lg bg-darkglass border border-gray-700 text-white focus:outline-none input-glow"
-              />
+        <div
+          class="glass-card rounded-2xl p-6 shadow-soft flex flex-col min-h-[360px]"
+          data-aos="fade-up"
+          data-aos-delay="100"
+        >
+          <div class="flex items-center gap-3 mb-5">
+            <div
+              class="w-11 h-11 rounded-xl bg-purple-500/20 flex items-center justify-center"
+            >
+              <i data-feather="image" class="w-5 h-5 text-purple-300"></i>
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold">Image Search</h2>
+              <p class="text-gray-400 text-sm">Upload a product image</p>
             </div>
           </div>
-        </form>
+
+          <form
+            action="/predict"
+            method="post"
+            enctype="multipart/form-data"
+            class="search-form flex flex-col flex-1"
+          >
+            <div class="space-y-4">
+              <label
+                class="upload-area rounded-xl p-6 text-center cursor-pointer block h-[142px] flex items-center justify-center"
+                id="uploadLabel"
+              >
+                <div
+                  class="flex flex-col items-center justify-center"
+                  id="uploadDefault"
+                >
+                  <i
+                    data-feather="upload-cloud"
+                    class="w-12 h-12 text-gray-400 mb-3"
+                  ></i>
+                  <p class="text-gray-300 mb-1" id="uploadText">
+                    Drag & drop an image here
+                  </p>
+                  <p class="text-sm text-gray-500">
+                    or click to browse JPG, PNG, WEBP
+                  </p>
+                </div>
+
+                <div class="hidden w-full" id="previewBox">
+                  <img
+                    id="imagePreview"
+                    class="w-full h-28 object-contain rounded-xl result-image mb-2"
+                    alt="Selected Image Preview"
+                  />
+                  <p
+                    class="text-green-300 text-sm truncate"
+                    id="selectedFileName"
+                  ></p>
+                </div>
+
+                <input
+                  type="file"
+                  accept=".jpg,.jpeg,.png,.gif,.webp"
+                  class="hidden"
+                  id="imageUpload"
+                  name="img_field"
+                  required
+                />
+              </label>
+
+              <div class="flex items-center justify-between gap-4">
+                <label class="text-gray-300 text-sm">Results</label>
+                <input
+                  type="number"
+                  min="1"
+                  max="20"
+                  value="5"
+                  name="k"
+                  class="w-24 px-3 py-2 rounded-lg bg-darkglass border border-gray-700 text-white focus:outline-none input-glow"
+                />
+              </div>
+            </div>
+
+            <button
+              class="btn-gradient w-full px-6 py-3 rounded-xl font-semibold text-white shadow-glow mt-auto"
+              type="submit"
+            >
+              <span
+                class="button-content flex items-center justify-center gap-2"
+              >
+                <i data-feather="image" class="w-5 h-5"></i>
+                <span>Search by Image</span>
+              </span>
+            </button>
+          </form>
+        </div>
       </div>
 
-      <div class="glass-card rounded-2xl p-6 shadow-soft" data-aos="fade-up" data-aos-delay="100">
-        <h2 class="text-xl font-semibold mb-6 text-gray-100">Search Results</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="results-container">
+      {% if result %}
+      <div
+        class="glass-card rounded-2xl p-5 shadow-soft mb-8 border border-red-400/30"
+        data-aos="fade-up"
+      >
+        <div class="flex items-center gap-3 text-red-200">
+          <i data-feather="alert-circle" class="w-5 h-5"></i>
+          <p>{{ result }}</p>
+        </div>
+      </div>
+      {% endif %}
+
+      <div
+        class="glass-card rounded-2xl p-6 shadow-soft"
+        data-aos="fade-up"
+        data-aos-delay="150"
+      >
+        <div
+          class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6"
+        >
+          <div>
+            <h2 class="text-2xl font-semibold text-gray-100">Search Results</h2>
+            <p class="text-gray-400 text-sm mt-1">
+              {% if results %} Showing {{ results|length }} visually similar
+              products {% else %} Your retrieved products will appear here {%
+              endif %}
+            </p>
+          </div>
+
           {% if results %}
-            {% for url in results %}
-              <div class="result-card bg-darkglass rounded-xl overflow-hidden transition-all">
-                <img src="{{ url }}" alt="Product Image" class="w-full h-48 object-cover"/>
-                <div class="p-4">
-                  <h3 class="font-medium mb-1">Product {{ loop.index }}</h3>
-                </div>
-              </div>
-            {% endfor %}
-          {% else %}
-            <div class="text-center py-12 text-gray-400 col-span-full flex flex-col items-center justify-center">
-              <i data-feather="search" class="w-10 h-10 mb-3"></i>
-              <p>Your search results will appear here</p>
+          <span
+            class="px-4 py-2 rounded-full bg-green-500/10 text-green-300 text-sm border border-green-500/20"
+          >
+            Retrieval Complete
+          </span>
+          {% endif %}
+        </div>
+
+        <div
+          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
+          id="results-container"
+        >
+          {% if results %} {% for url in results %}
+          <div
+            class="result-card bg-darkglass rounded-xl overflow-hidden border border-gray-800"
+          >
+            <div class="result-image h-56 flex items-center justify-center">
+              <img
+                src="{{ url }}"
+                alt="Retrieved Product {{ loop.index }}"
+                class="w-full h-full object-cover"
+              />
             </div>
+            <div class="p-4">
+              <div class="flex items-center justify-between gap-3">
+                <h3 class="font-semibold">Result {{ loop.index }}</h3>
+                <span
+                  class="text-xs px-3 py-1 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/20"
+                >
+                  Similar Item
+                </span>
+              </div>
+            </div>
+          </div>
+          {% endfor %} {% else %}
+          <div
+            class="text-center py-16 text-gray-400 col-span-full flex flex-col items-center justify-center"
+          >
+            <div
+              class="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center mb-4"
+            >
+              <i data-feather="search" class="w-8 h-8"></i>
+            </div>
+            <p class="font-medium text-gray-300">No search results yet</p>
+            <p class="text-sm text-gray-500 mt-1">
+              Use text or image search to retrieve similar fashion products
+            </p>
+          </div>
           {% endif %}
         </div>
       </div>
+
+      <footer class="text-center text-gray-500 text-sm mt-10">
+        Built with fine-tuned CLIP, Flask, and vector similarity search.
+      </footer>
     </div>
 
     <script>
-      AOS.init({ duration: 800, once: true });
+      AOS.init({ duration: 700, once: true });
       feather.replace();
 
-      // File upload visual feedback
       const fileInput = document.getElementById("imageUpload");
-      const uploadText = document.getElementById("uploadText");
+      const uploadLabel = document.getElementById("uploadLabel");
+      const uploadDefault = document.getElementById("uploadDefault");
+      const previewBox = document.getElementById("previewBox");
+      const imagePreview = document.getElementById("imagePreview");
+      const selectedFileName = document.getElementById("selectedFileName");
+
+      function showPreview(file) {
+        if (!file) return;
+
+        selectedFileName.textContent = file.name;
+        imagePreview.src = URL.createObjectURL(file);
+
+        uploadDefault.classList.add("hidden");
+        previewBox.classList.remove("hidden");
+      }
 
       fileInput.addEventListener("change", () => {
         if (fileInput.files.length > 0) {
-          uploadText.textContent = `Selected file: ${fileInput.files[0].name}`;
-          uploadText.classList.add("text-green-400");
-        } else {
-          uploadText.textContent = "Drag & drop an image here";
-          uploadText.classList.remove("text-green-400");
+          showPreview(fileInput.files[0]);
         }
+      });
+
+      uploadLabel.addEventListener("dragover", (event) => {
+        event.preventDefault();
+        uploadLabel.classList.add("drag-over");
+      });
+
+      uploadLabel.addEventListener("dragleave", () => {
+        uploadLabel.classList.remove("drag-over");
+      });
+
+      uploadLabel.addEventListener("drop", (event) => {
+        event.preventDefault();
+        uploadLabel.classList.remove("drag-over");
+
+        const files = event.dataTransfer.files;
+
+        if (files.length > 0) {
+          fileInput.files = files;
+          showPreview(files[0]);
+        }
+      });
+
+      document.querySelectorAll(".search-form").forEach((form) => {
+        form.addEventListener("submit", () => {
+          const button = form.querySelector("button[type='submit']");
+          const content = button.querySelector(".button-content");
+
+          button.disabled = true;
+          button.classList.add("opacity-80", "cursor-not-allowed");
+
+          content.innerHTML = `
+            <span class="loader"></span>
+            <span>Searching...</span>
+          `;
+        });
       });
     </script>
   </body>
