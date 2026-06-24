@@ -5,7 +5,7 @@ model:
   learning_rate: 0.0001
   batch_size: 32
   epochs: 10
-  device: "auto"
+  device: "cpu"
 
 data:
   dataset_name: "paramaggarwal/fashion-product-images-dataset"
