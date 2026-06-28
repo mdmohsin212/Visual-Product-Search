@@ -1,3 +1,4 @@
+from visual_product_search.evaluation.evaluator import ImageToImageEvaluator
 from visual_product_search.evaluation.metrics import (
     average_metric_dicts,
     average_precision_at_k,
@@ -10,6 +11,7 @@ from visual_product_search.evaluation.metrics import (
 )
 
 __all__ = [
+    "ImageToImageEvaluator",
     "average_metric_dicts",
     "average_precision_at_k",
     "dcg_at_k",
